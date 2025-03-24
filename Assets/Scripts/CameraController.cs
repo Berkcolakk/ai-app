@@ -1,31 +1,51 @@
 using UnityEngine;
 
-public class NewMonoBehaviourScript : MonoBehaviour
+public class FpsCameraController : MonoBehaviour
 {
-    [Range(50,500)]
-    [SerializeField] float sensivity;
-    [SerializeField] Transform player;
-    [SerializeField] float xRot = 0.0f;
-    [SerializeField] float smoothing;
-    float currentRot;
+    [Header("Sensitivity")]
+    [Range(50, 500)]
+    [SerializeField] float mouseSensitivity = 100f;
+
+    [Header("Joystick (Mobil)")]
+    [SerializeField] Joystick lookJoystick;  // Joystick veya SimpleJoystick
+
+    [Header("Transforms")]
+    [SerializeField] Transform playerBody;
+
+    float xRotation = 0f;
+
     void Start()
     {
-        
+        #if UNITY_STANDALONE || UNITY_EDITOR
+        // Sadece PC platformu için fareyi kilitle
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible   = false;
+        #endif
     }
 
-    // Update is called once per frame
     void Update()
     {
-        float rotX = Input.GetAxisRaw("Mouse X") * sensivity * Time.deltaTime;
-        float rotY = Input.GetAxisRaw("Mouse Y") * sensivity * Time.deltaTime;
+        float mouseX, mouseY;
 
-        xRot -= rotY;
-        xRot = Mathf.Clamp(xRot, -80f, 80f);
+        // Eğer Joystick nesnesi referans olarak atandıysa ve mobil platformdaysa
+        if (lookJoystick != null && (Application.isMobilePlatform))
+        {
+            // Joystick verisi
+            mouseX = lookJoystick.Horizontal * mouseSensitivity * Time.deltaTime;
+            mouseY = lookJoystick.Vertical   * mouseSensitivity * Time.deltaTime;
+        }
+        else
+        {
+            // PC'de fare
+            mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+            mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+        }
 
-        currentRot += rotX;
-        xRot = Mathf.Lerp(currentRot, 0, Time.deltaTime * smoothing);
+        // Dikey rota
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -80f, 80f);
 
-        transform.localRotation = Quaternion.Euler(xRot, 0f, currentRot);
-        player.Rotate(Vector3.up * rotX);
+        transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        playerBody.Rotate(Vector3.up * mouseX);
     }
 }
