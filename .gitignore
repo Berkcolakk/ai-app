@@ -1,0 +1,23 @@
+# Unity
+[Ll]ibrary/
+[Tt]emp/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]sersettings/
+
+# Asset Store paketleri
+[Pp]ackages/PackageCache/
+[Pp]ackages/packages-lock.json
+
+# Addressables (varsa)
+[Aa]ssets/AddressableAssetsData/*/*.bin*
+[Aa]ssets/AddressableAssetsData/*/*.hash
+[Aa]ssets/AddressableAssetsData/*/*.json
+
+# Çeşitli
+*.csproj
+*.sln
+*.user
+*.unitypackage
+*.apk
